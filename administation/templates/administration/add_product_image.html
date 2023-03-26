@@ -1,0 +1,118 @@
+
+{% extends 'administration/components/base.html' %}
+{%load static %}
+{% block head %}
+<link rel="stylesheet" href="{% static 'administration/plugins/dropzone/min/dropzone.min.css' %}">
+<link rel="stylesheet" href="{% static 'administration/dist/css/custom-styles.css' %}">
+<style>
+  .dele {
+  width: 50px;
+  height: 50px;
+  
+  /* Center vertically and horizontally */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: -25px 0 0 -25px; /* apply negative top and left margins to truly center the element */
+}
+</style>
+{% endblock %}
+{% block content %}
+<div class='row'>
+  <div class="col-12">
+    <a href="{% url 'admin:product.list' %}" class="btn btn-default btn-sm mb-2 float-right"><i class="fas fa-dolly"></i> product list</a>
+  </div>
+  
+</div>
+<div class="row">
+  <div class="col-md-12 order-1">
+    <div class="card  card-outline card-primary ">
+      <div class="card-header">
+        <h3 class="card-title"><i class="fas fa-images text-primary"></i> Existing  Images</h3>
+        <div class="card-tools">
+          <!-- Buttons, labels, and many other things can be placed here! -->
+          <a data-url="{% url 'admin:product.image.delete.all' product.id %}" href="javascript:void(0)" class="btn  btn-tool delete-all" ><i class="far fa-trash-alt"></i> Remove all</a>
+           <!-- This will cause the card to maximize when clicked -->
+
+      <button type="button" class="btn btn-tool" data-card-widget="maximize"><i class="fas fa-expand"></i></button>
+      <!-- This will cause the card to collapse when clicked -->
+      <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+          
+        </div>
+        <!-- /.card-tools -->
+      </div>
+      <!-- /.card-header -->
+      <div class="card-body">
+        <div class="row" id="productimagelist" >
+          {% for image in product.productimage_set.all %}
+          <div class="card col-sm-1 col-md-1">
+            
+            
+              <button type="button" data-url="{% url 'admin:product.image.delete' image.id %}"  class="btn btn-tool delete dele" data-card-widget="remove"><i class="fas fa-times-circle fa-2x"></i></button>
+              <img class="card-img-top" class="p-1" src="{{image}}" alt="Card image cap" />
+            
+          </div>
+          {% endfor %}
+        </div>
+
+
+      </div>
+     
+    </div>
+    <!-- /.card -->
+  </div>
+    <div class="col-md-12 order-0">
+        <div class="card card-outline card-success">
+            <div class="card-header">
+              <h3 class="card-title"><i class="fas fa-cloud-upload-alt text-success"></i> Upload</h3>
+              <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="maximize"><i class="fas fa-expand"></i></button>
+                <!-- This will cause the card to collapse when clicked -->
+                <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                
+              </div>
+              <!-- /.card-tools -->
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+              <form class="dropzone dz" action="{% url 'admin:product.image.list' product.id %}" method="POST" id="img_product">
+                {% csrf_token %}
+                <div class="fallback">
+                  <input type="file" name="product_image" multiple />
+                </div>
+              </form>
+                
+                
+            </div>
+            <!-- /.card-body -->
+           
+          </div>
+          <!-- /.card -->
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{% static 'administration/plugins/dropzone/min/dropzone.min.js' %}"></script>
+<script>
+  Dropzone.autoDiscover = false;
+  const product_image_dropzone = new Dropzone("#img_product",{
+    url:"{% url 'admin:product.image.list' product.id %}",
+    maxFiles:6,
+    maxFilesize:5,
+    acceptedFiles:'.jpg',
+  })
+  $('button.delete').on('click',function(){
+    
+    url = $(this).attr('data-id')
+    $.get(url,function(){
+      $(this).remove()
+    })
+  });
+  $('a.delete-all').on('click',function(){
+    url = $(this).attr('data-url')
+    $.get(url,function(){
+      $('#productimagelist').html("");
+    })
+  })
+</script>
+{% endblock %}

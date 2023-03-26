@@ -1,0 +1,107 @@
+{% extends 'administration/components/base.html' %}
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <strong> Alert!</strong> data set is too small !!
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+    </div>
+    <div class="col-md-12">
+        <div class="card card-outline card-success">
+            <div class="card-header">
+              <h3 class="card-title">Most Selling Products</h3>
+              <div class="card-tools">
+                <!-- Buttons, labels, and many other things can be placed here! -->
+                <!-- Here is a label for example -->
+                <span class="badge badge-primary">Online Orders</span>
+                <button type="button" class="btn btn-tool" data-card-widget="maximize"><i class="fas fa-expand"></i></button>
+                <!-- This will cause the card to collapse when clicked -->
+                <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                <!-- This will cause the card to be removed when clicked -->
+              </div>
+              <!-- /.card-tools -->
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+              <table class="table table-hover">
+                <thead>
+                    <tr class="text-center">
+                        <th>Sl.No</th>
+                        <th>Product Name</th>
+                        <th>Buying Factor (in Units)</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    {% for product in fav_on_items %}
+                    <tr class="text-center">
+                        <td>{{forloop.counter}}</td>
+                        <td>{{product.product_name}}</td>
+                        <td>{{product.max}}</td>
+                    </tr>
+                        
+                        
+                    {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            <!-- /.card-body -->
+            <div class="card-footer">
+              
+            </div>
+            <!-- /.card-footer -->
+          </div>
+          <!-- /.card -->
+    </div>
+    <div class="col-md-12">
+        <div class="card card-outline card-success">
+            <div class="card-header">
+              <h3 class="card-title">Most Selling Products</h3>
+              <div class="card-tools">
+                <!-- Buttons, labels, and many other things can be placed here! -->
+                <!-- Here is a label for example -->
+                <span class="badge badge-secondary">Offline Orders</span>
+                <button type="button" class="btn btn-tool" data-card-widget="maximize"><i class="fas fa-expand"></i></button>
+                <!-- This will cause the card to collapse when clicked -->
+                <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                <!-- This will cause the card to be removed when clicked -->
+              </div>
+              <!-- /.card-tools -->
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+              <table class="table table-hover">
+                <thead>
+                    <tr class="text-center">
+                        <th>Sl.No</th>
+                        <th>Product Name</th>
+                        <th>Buying Factor(in Units)</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    {% for product in fav_off_items %}
+                    <tr class="text-center">
+                        <td>{{forloop.counter}}</td>
+                        <td>{{product.product_name}}</td>
+                        <td>{{product.max}}</td>
+                    </tr>
+                        
+                        
+                    {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            <!-- /.card-body -->
+            <div class="card-footer">
+              
+            </div>
+            <!-- /.card-footer -->
+          </div>
+          <!-- /.card -->
+    </div>
+</div>
+{% endblock %}

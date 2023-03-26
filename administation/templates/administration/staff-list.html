@@ -1,0 +1,108 @@
+{% extends 'administration/components/base.html' %}
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card card-outline card-warning">
+            <div class="card-header">
+              <h3 class="card-title">Staff Details</h3>
+              <div class="card-tools">
+            <a href="{% url 'admin:staff.new' %}" class="btn btn-sm btn-tool "><i class="fas fa-user-tie"></i> New Staff</a>
+      <button type="button" class="btn btn-tool" data-card-widget="maximize"><i class="fas fa-expand"></i></button>
+              </div>
+              <!-- /.card-tools -->
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+              <table class="table table-hover table-striped">
+                  <thead>
+                      <tr>
+                          <th>Sl.No</th>
+                          <th>ID</th>
+                          <th>Name</th>
+                          <th>Email</th>
+                          <th>Actions</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      {% for staff in staffs %}
+                      <tr>
+                          <td>{{forloop.counter}}</td>
+                          <td>{{staff.id}}</td>
+                          <td> <img src="{{staff.avatar.url}}" class="img-circle elevation-1" width="64px"/>&nbsp;{{staff.user.get_full_name}}</td>
+                          <td><a href="mailto:{{staff.user.email}}">{{staff.user.email}}</a></td>
+                          <td>
+                              <a href="#" class="btn btn-sm btn-default mr-1"><i class="far fa-eye"></i></a>
+                              {% if staff.user.is_active %}
+                              <a data-href="{% url 'admin:staff.toggle.lock' staff.id %}" class="btn btn-sm btn-success mr-1 staff-lock"><i class="fas fa-user-lock"></i></a>
+                              {% else %}
+                              <a data-href="{% url 'admin:staff.toggle.lock' staff.id %}" class="btn btn-sm btn-danger mr-1 staff-lock"><i class="fas fa-user-lock"></i></a>
+                              {% endif %}
+                              <a data-url="{% url 'admin:staff.remove' staff.id %}" class="btn btn-sm btn-default mr-1 delete"><i class="fas fa-user-slash"></i></a>
+                          </td>
+                      </tr>
+                      {% endfor %}
+                  </tbody>
+              </table>
+            </div>
+            <!-- /.card-body -->
+            <div class="card-footer">
+              
+            </div>
+            <!-- /.card-footer -->
+          </div>
+          <!-- /.card -->
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+   $(document).ready(function() {
+    $('table').DataTable();
+    $('a.staff-lock').on('click',function(){
+        url = $(this).attr('data-href')
+        if( $(this).hasClass('btn-success')) {
+
+$(this).removeClass('btn-success')
+$(this).addClass('btn-danger')
+} else {
+$(this).removeClass('btn-danger')
+$(this).addClass('btn-success')
+}
+        $.get(url,function(data){})
+    })
+} );
+$('table').on('click', "a.delete", function (e) {
+        url = $(this).attr('data-url')
+        
+        $.confirm({
+            title: 'Warning !!',
+            columnClass: 'col-md-6 col-md-offset-3',
+            type: 'red',
+            icon: 'fas fa-exclamation-triangle',
+            typeAnimated: true,
+            content: '<b>ARE YOU SURE YOU WANT DO DELETE</b>? This operation can not be undone later..',
+            buttons: {
+                Proceed: {
+                    btnClass: 'btn-danger',
+                    icon: 'fas fa-bomb',
+                    action: function () {
+                       $.get(url,function(data){
+                        
+                       })
+                       location.reload();
+                    },
+                    backgroundDismissAnimation: 'glow',
+                },
+                Cancel: {
+                    btnClass: 'btn-success',
+                    icon: 'far fa-life-ring',
+                    action: function () {
+                    },
+                    backgroundDismissAnimation: 'glow',
+                }
+            }
+        })
+        console.log()
+    })
+</script>
+{% endblock %}

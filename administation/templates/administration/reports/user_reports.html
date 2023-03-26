@@ -1,0 +1,57 @@
+{% extends 'administration/components/base.html' %}
+{% block content %}
+<div class="card card-outline card-info">
+    <div class="card-header">
+        <h3 class="card-title">Users</h3>
+    </div>
+    <div class="card-body">
+        <table class="table table-hover table-striped">
+            <thead>
+                <tr>
+                   <th>Sl.No</th>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Mobile</th>
+                  <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ouser in online_users %}
+                <tr>
+                    <td>{{forloop.counter}}</td>
+                    <td><img src="{{ouser.customer.profile_pic.url}}" class="img-circle elevation-1" width="64px" alt=""> {{ouser.get_full_name}}</td>
+                    <td><a href="mailto:{{ouser.email}}">{{ouser.email}}</a></td>
+                    <td><a href="tel:+91{{ouser.customer.mobile}}">{{ouser.customer.mobile}}</a></td>
+                    <td>
+                        {% if ouser.is_active %}
+                        <a data-href="{% url 'admin:user.toggle.lock' ouser.id %}" class="btn btn-sm btn-success mr-1 staff-lock"><i class="fas fa-user-lock"></i></a>
+                        {% else %}
+                        <a data-href="{% url 'admin:user.toggle.lock' ouser.id %}" class="btn btn-sm btn-danger mr-1 staff-lock"><i class="fas fa-user-lock"></i></a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="card-footer"></div>
+</div>
+
+{% endblock %}
+{% block scripts %}
+<script>
+    $('table').DataTable()
+    $('a.staff-lock').on('click',function(){
+        url = $(this).attr('data-href')
+        if( $(this).hasClass('btn-success')) {
+
+$(this).removeClass('btn-success')
+$(this).addClass('btn-danger')
+} else {
+$(this).removeClass('btn-danger')
+$(this).addClass('btn-success')
+}
+        $.get(url,function(data){})
+    })
+</script>
+{% endblock %}

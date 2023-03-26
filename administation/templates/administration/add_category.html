@@ -1,0 +1,44 @@
+{% extends 'administration/components/base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <form method="POST" enctype="multipart/form-data" class="card card-outline card-primary">
+            {% csrf_token %}
+            <div class="card-header">
+              <h3 class="card-title"> <i class="fas fa-boxes"></i> Category Details</h3>
+              <div class="card-tools">
+                <!-- Buttons, labels, and many other things can be placed here! -->
+                <!-- Here is a label for example -->
+                <button type="button" class="btn btn-tool" data-card-widget="maximize"><i class="fas fa-expand"></i></button>
+              </div>
+              <!-- /.card-tools -->
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+                {% if messages %}
+                <div class="alert alert-success" role="alert">
+                    <h4 class="alert-heading">
+                        <ul>
+                        {% for message in messages %}
+                        <li>{{message}}</li>
+                        {% endfor %}
+                        </ul>
+                    </h4>
+                    
+                  </div>
+                  {% endif %}
+                {{ form | crispy}}
+            </div>
+            <!-- /.card-body -->
+            <div class="card-footer">
+              <a href="{% url 'admin:category.list' %}" class="btn btn-default float-left"><i class="fas fa-chevron-circle-left"></i> Back to Categories</a>
+              <button type="submit" class="btn btn-success float-right"><i class="fas fa-save"></i>Save</button>
+            </div>
+            <!-- /.card-footer -->
+          </div>
+          <!-- /.card -->
+    </div>
+</div>
+
+{% endblock %}

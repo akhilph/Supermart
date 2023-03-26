@@ -1,0 +1,90 @@
+{% extends 'administration/components/base.html' %}
+{% load static %}
+{% block content %}
+<div class="col-12 col-sm-12">
+    <div class="card card-success card-tabs">
+      <div class="card-header p-0 pt-1">
+        <ul class="nav nav-tabs" id="custom-tabs-one-tab" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link active" id="custom-tabs-one-home-tab" data-toggle="pill" href="#custom-tabs-one-home" role="tab" aria-controls="custom-tabs-one-home" aria-selected="true"> Online Orders</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="custom-tabs-one-profile-tab" data-toggle="pill" href="#custom-tabs-one-profile" role="tab" aria-controls="custom-tabs-one-profile" aria-selected="false"> Offline Orders</a>
+          </li>
+          
+        </ul>
+      </div>
+      <div class="card-body">
+        <div class="tab-content" id="custom-tabs-one-tabContent">
+          <div class="tab-pane fade active show" id="custom-tabs-one-home" role="tabpanel" aria-labelledby="custom-tabs-one-home-tab">
+            <table class="table table-hover table-striped">
+                <thead>
+                    <tr>
+                        <th>Sl.No</th>
+                        <th>Date</th>
+                        <th>Customer Name</th>
+                        <th>Customer Mobile Number</th>
+                        <th>Order Id</th>
+                        <th>No.of Items</th>
+                        <th>Total Price (In Rupees)</th>
+                      
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in online_odr %}
+                    <tr>
+                        <td>{{forloop.counter}}</td>
+                        <td>{{order.order_dt}}</td>
+                        <td>{{order.user.get_full_name}}</td>
+                        <td>{{order.user.customer.mobile}}</td>
+                        <td>{{order.id}}</td>
+                        <td>{{order.onlineorderitems_set.count}}</td>
+                        <td>{{order.grandtotal}} Rupees</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+          </div>
+          <div class="tab-pane fade" id="custom-tabs-one-profile" role="tabpanel" aria-labelledby="custom-tabs-one-profile-tab">
+            <table class="table table-hover table-striped">
+                <thead>
+                    <tr>
+                        <th>Sl.No</th>
+                        <th>Date</th>
+                        <th>Order Id</th>
+                        <th>Customer Mobile Number</th>
+                        <th>No.of Items</th>
+                        <th>Total Price (In Rupees)</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in offile_odr %}
+                    <tr>
+                        <td>{{forloop.counter}}</td>
+                        <td>{{order.order_date}}</td>
+                        <td>{{order.id}}</td>
+                        <td>{{order.customer_mobile}}</td>
+                        <td>{{order.orderitems_set.count}}</td>
+                        <td>{{order.order_total_price}} Rupees</td>
+                        <td>
+                            <a class="btn btn-default btn-sm" target="_blank" href="{% url 'staff:order.receipt' order.id %}"><i class="fas fa-file-invoice-dollar"></i></a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+      <!-- /.card -->
+    </div>
+  </div>
+{% endblock %}
+{% block scripts %}
+
+<script>
+  $('table').DataTable()
+</script>
+{% endblock %}

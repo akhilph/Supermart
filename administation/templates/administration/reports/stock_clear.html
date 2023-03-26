@@ -1,0 +1,41 @@
+{% extends 'administration/components/base.html' %}
+{% block content %}
+<div class="card card-outline card-info">
+    <div class="card-header">
+        <h3 class="card-title">Stock Details</h3>
+    </div>
+    <div class="card-body">
+        <table class="table table-hover table-striped">
+            <thead>
+                <tr>
+                  <td>Sl.No</td>
+                  <td>Product</td>
+                  <td>Stock Added Date</td>
+                  <td>Stock Left</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                <tr>
+                    <td>{{forloop.counter}}</td>
+                    <td> <img src="{{product.productimage_set.first }}" height="64px" alt="{{product}} Image"> &nbsp;&nbsp;{{product}}</td>
+                    <td>{{product.modified_on}}</td>
+                    <td>{{product.stock}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="card-footer">
+        <a class="print_stock btn btn-sm btn-success float-right" >Print</a>
+    </div>
+</div>
+
+{% endblock %}
+{% block scripts %}
+<script>
+  $('a.print_stock').on('click',function(){
+      window.print()
+  })
+</script>
+{% endblock %}
