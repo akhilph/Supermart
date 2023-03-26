@@ -1,0 +1,24 @@
+{% extends 'e_commerce/components/base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block content %}
+<div class="container mt-5" style="margin-top: 100px !important;">
+    <div class="row">
+        <form class="col-12" method="POST">
+            {% csrf_token %}
+            <div class="card">
+                <div class="card-header">
+                    Feedback
+                </div>
+                <div class="card-body">
+                    {{form|crispy}}
+                </div>
+                <div class="card-footer">
+                    <button class="btn btn-sm btn-success float-right" type="submit">Send</button>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
+{% endblock %}

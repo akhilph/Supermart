@@ -1,0 +1,40 @@
+{% extends 'e_commerce/components/base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block content %}
+
+    <div class="container" style="margin-top: 100px !important;">
+        <div class="col-12">
+            <div class="card" >
+                <div class="card-body">
+                  <h5 class="card-title text-primary"><i class="fas fa-feather-alt fa-2x"></i> {{title}}</h5>
+                  <h6 class="card-subtitle mb-2 text-muted">Fill the details</h6>
+                  <div class="float-right rating text-warning" style="font-size: large !important;"></div>
+                    <form action="" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                       {{review_form |crispy}}
+                       <button type="submit" class="btn btn-sm btn-success float-right">Submit</button>
+                    </form>
+                </div>
+              </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'js/rate.js' %}"></script>
+<script>
+    $('#div_id_product').hide()
+    $('#div_id_rating').hide()
+    $('#div_id_rating').hide()
+    $('#div_id_user').hide()
+    var options = {
+    initial_value:  $("#id_rating").val(),
+    max_value: 5,
+    step_size: 0.5,
+    update_input_field_name: $("#id_rating"),
+}
+$(".rating").rate(options);
+</script>
+{% endblock %}

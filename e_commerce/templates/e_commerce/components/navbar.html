@@ -1,0 +1,52 @@
+{% load static %}
+<nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark shadow-lg">
+<div class="container-fluid">
+
+    <a class="navbar-brand" href="#">
+        <img src="{% static 'images/favicon1.png' %}" alt=" supermart logo" width="32px">
+
+        SuperMart
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  
+    <div class="collapse navbar-collapse" id="navbarColor02">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          
+        </li>
+        {% if user.is_authenticated %}
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'ecommerce:product.lookup' %}">Products</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'e_commerce:queries.feedback' %}">Feedback</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'e_commerce:queries.complaints' %}">Complaints</a>
+        </li>
+        {% endif %}
+      </ul>
+     
+      <form class="form-inline my-2 my-lg-0">
+        {% if user.is_authenticated %}
+        <span class="text-light">
+        <a href="{% url 'ecommerce:order.history' %}" class="text-white" style="text-decoration: none;">
+          <img src="{{user.customer.profile_pic.url}}" class="img-circle img-responsive" width="32px"/>
+          Welcome {{ user.username }} 
+        </a>
+        </span>
+        <a class="btn text-white my-2 my-sm-0" href="{% url 'ecommerce:shopping.cart' %}">
+          <i class="fas fa-shopping-cart"> Cart </i>
+          <span class="badge-warning badge-pill badge total_cart_items">0</span>
+        </a>
+        <a class="btn text-white my-2 my-sm-0" href="{% url 'user:logout' %}"> <i class="fas fa-user"></i> Logout</a>
+        {% else %}
+          <a class="btn text-white my-2 my-sm-0" href="{% url 'user:login' %}"> <i class="fas fa-user"></i> Login</a>
+        {% endif %}
+      </form>
+    </div>
+</div>
+</nav>

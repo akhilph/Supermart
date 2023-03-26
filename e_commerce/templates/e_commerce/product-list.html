@@ -1,0 +1,21 @@
+<div class="row">
+    {% for product in products %}
+<div class="col-sm-6 col-md-6 col-lg-4">
+<div class="card m-1">
+<img class="card-img-top" src="{{product.productimage_set.first }}" height="200px" alt="{{product}}">
+<div class="card-body">
+<h5 class="card-title text-center">{{product}}</h5>
+<p class="card-text text-center">Price : {{product.price}} </p>
+<a data-id="{{product.id}}" data-name="{{product}}" data-img="{{product.productimage_set.first }}" data-price="{{product.price}}" data-stock="{{product.stock}}" class="btn btn-sm btn-primary float-right add-product"><i class="fas fa-info-circle"> Add</i></a>
+<a href="{% url 'ecommerce:product.details' product.id %}" class="btn btn-sm btn-success float-left"><i class="fas fa-cart-plus"> Details</i></a>
+</div>
+</div>
+</div>
+
+{% endfor %}
+</div>
+{% if not products %}
+<div class="text-center">
+    <i class="far fa-frown-open fa-4x mt-2"></i><p class="lead text-center"> Sorry no products are Avaliable at this time </p>
+</div>
+{% endif %}

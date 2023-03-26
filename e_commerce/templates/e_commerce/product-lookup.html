@@ -1,0 +1,110 @@
+{% extends 'e_commerce/components/base.html' %}
+{% load static %}
+{% block content %}
+<div class="container-fluid mt-5 pt-5">
+
+    <div class="row">
+        <div class="col-sm-4 col-md-4 col-lg-3 mt-2 position-sticky" id="category_tab">
+           <div class="card ">
+            <div class="card-header">
+                Categories
+              </div>
+              <div class="card-body category_tab">
+                  {% for category in categories %}
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="{{category.id}}" id="id_{{category}}">
+                    <label class="form-check-label" for="id_{{category}}">
+                      {{category}} <i class="badge badge-primary badge-pill">{{category.product_set.count}}</i>
+                    </label>
+                  </div>
+                  {% endfor %}
+              </div>
+           </div>
+
+            
+        </div>
+        <div class="col-sm-8 col-md-8">
+          <div class="row">
+            <div class="input-group m-3">
+              <input type="text" class="form-control product-search" placeholder="Search for Products" aria-label="Recipient's username" aria-describedby="button-addon2">
+              <div class="input-group-append">
+                <button class="btn btn-outline-secondary search" type="button" id="button-addon2"><i class="fas fa-search"></i> search</button>
+              </div>
+            </div>
+          </div>
+            <p class="lead"> Products</p>
+            <hr />
+
+            <div class="container-fluid product_tab">
+
+                <div class="row">
+                    {% for product in products %}
+      <div class="col-sm-6 col-md-6 col-lg-4">
+         <div class="card m-1">
+            <img class="card-img-top" src="{{product.productimage_set.first }}" height="200px" alt="{{product}}">
+            <div class="card-body">
+              <h5 class="card-title text-center">{{product}}</h5>
+              <p class="card-text text-center">Price : {{product.price}} </p>
+              <a data-id="{{product.id}}" data-name="{{product}}" data-img="{{product.productimage_set.first }}" data-price="{{product.price}}" data-stock="{{product.stock}}" class="btn btn-sm btn-primary float-right add-product"><i class="fas fa-info-circle"> Add</i></a>
+              <a href="{% url 'ecommerce:product.details' product.id %}" class="btn btn-sm btn-success float-left"><i class="fas fa-cart-plus"> Details</i></a>
+            </div>
+          </div>
+      </div>
+
+      {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+
+   <script>
+       $('.category_tab').on('click','input[type="checkbox"]',function(event) {
+           category_id = []
+            $('.product_tab').html(`<div class="text-center align-middle"><div class="spinner-grow text-muted"></div>
+                                <div class="spinner-grow text-primary"></div>
+                                <div class="spinner-grow text-success"></div>
+                                <div class="spinner-grow text-info"></div>
+                                <div class="spinner-grow text-warning"></div>
+                                <div class="spinner-grow text-danger"></div>
+                                <div class="spinner-grow text-secondary"></div>
+                                <div class="spinner-grow text-dark"></div>
+                                <div class="spinner-grow text-light"></div>
+                                </div>`)
+          $('#category_tab :checked').each(function() {
+                category_id.push(parseInt($(this).val()));
+            });
+            setTimeout(function(){
+                $.get("{% url 'ecommerce:product.search'%}",{"categories":JSON.stringify(category_id)},function(data){
+            $('.product_tab').html(data)
+          })
+            },500)
+
+       })
+      $(document).on('click','.add-product',function(event){
+        name= $(this).attr('data-name');
+        id = $(this).attr('data-id');
+        price = $(this).attr('data-price');
+        stock = $(this).attr('data-stock');
+        img = $(this).attr('data-img')
+        cart.addproduct(id,name,price,1,stock,img);
+        
+      })
+      $(document).on('click','button.search',function(event){
+        let name = $('input.product-search').val()
+        $.get("{% url 'ecommerce:product.search-name' %}",{"name":name},function(data){
+          $('.product_tab').html(data)
+        })
+      })
+      $(document).on('keypress',function(e) {
+    if(e.which == 13) {
+      let name = $('input.product-search').val()
+        $.get("{% url 'ecommerce:product.search-name' %}",{"name":name},function(data){
+          $('.product_tab').html(data)
+        })
+    }
+});
+   </script>
+{% endblock %}
