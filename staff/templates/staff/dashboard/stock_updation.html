@@ -1,0 +1,101 @@
+{% extends 'staff/components/base.html' %}
+{% load static %}
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title"> Stock Details</h3>
+        <div class="card-tools">
+           
+            <button type="button" class="btn btn-tool" data-card-widget="maximize"><i class="fas fa-expand"></i></button>
+        </div>
+    </div>
+    <div class="card-body">
+        <table class="table table-hover table-striped">
+            {% csrf_token %}
+            <thead>
+                <tr>
+                    <th>Sl.No</th>
+                    <th>Product</th>
+                    <th>SKU</th>
+                    <th>Stock Updated Date</th>
+                    <th>Stock</th>
+                    <th>Reorder LvL</th>
+                    <th>Unit Price</th>
+                </tr>
+            </thead>
+            <tbody class="stock-upt">
+                {% for product in products %}
+                <tr>
+                    <td>
+                        {{forloop.counter}}
+                        <input type="hidden" name="id"    value="{{product.id}}">
+                    </td>
+                    <td> 
+                        <img src="{{product.productimage_set.first}}" width="64px" alt="{{product}} Image" />
+                        {{product}}
+                    </td>
+                    <td>{{product.sku}}</td>
+                    <td>{{product.modified_on}}</td>
+                    <td>
+                        <input type="number" class="form-control form-control-sm form-inline stock-value" name="stock" id="" value="{{product.stock}}" />
+                    </td>
+                    <td>
+                        {% if product.stock > product.reorder_lvl %}
+                           <b class="badge badge-pill badge-success">{{product.reorder_lvl}}</b> 
+                         {%else%}
+                         <b class="badge badge-pill badge-warning">{{product.reorder_lvl}}</b> 
+                        {% endif %}
+                    </td>
+                    <td>{{product.price}} Rupees</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="card-footer">
+        <a href="{% url 'staff:dashboard' %}" class="btn btn-default btn-sm"><i class="fas fa-arrow-circle-left"></i> Back</a>
+        <a class="btn btn-sm btn-success stock-update-btn float-right">Update</a>
+    </div>
+</div>
+
+{% endblock %}
+{% block scripts %}
+<script src="{% static 'js/custom.js' %}"></script>
+<script>
+    $('table').DataTable()
+    $('a.print').on('click',function(){
+        window.print();
+    })
+
+$(document).on('change','.stock-value',function(event){
+    element = event.target
+    if($(element).val()<0) {
+        $(element).val(0)
+    }
+})
+const updt_stock = function(){
+    let products = $('table>tbody').find('tr')
+    let stockinfo = []
+    products.each(function(index,product){
+        stockinfo.push({
+            id:parseInt($(product).find('input[type="hidden"]').val()),
+            stock:parseInt($(product).find('input[type="number"]').val())
+        });
+    })
+    $.post('{% url "staff:stock.blk.update" %}',JSON.stringify(stockinfo),function(response){
+        $.confirm({
+            title: 'Stock Update',
+            content: response,
+            buttons: {
+                OK: function () {
+                    location.reload()
+                },
+                
+                
+            }
+        });
+    });
+}
+$('.stock-update-btn').on('click',updt_stock)
+</script>
+{% endblock %}

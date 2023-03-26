@@ -1,0 +1,92 @@
+{% extends 'staff/components/base.html' %}
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title"> <a class="btn btn-sm" href="{% url 'staff:online.orders' %}"><i class="fas fa-arrow-circle-left"></i></a> Orders Details</h3>
+        <div class="card-tools">
+            <!-- Buttons, labels, and many other things can be placed here! -->
+            <!-- Here is a label for example -->
+            <button type="button" class="btn btn-tool" data-card-widget="maximize"><i class="fas fa-expand"></i></button>
+        </div>
+        <!-- /.card-tools -->
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-12 mb-3">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <i class="fas fa-user"></i> Name: {{order.user.get_full_name}}
+                    </div>
+                    <div>
+                        <i class="fas fa-envelope-open"></i> Email: <a href="mailto:{{order.user.email}}"> {{order.user.email}}</a>
+                    </div>
+                    <div>
+                        <i class="fas fa-mobile-alt"></i> Mobile: {{order.user.customer.mobile}}
+                    </div>
+                    <div>
+                        <i class="fas fa-shipping-fast"></i> Shipping To: {{order.shipping_address}}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="container-fluid">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <td>Sl.No</td>
+                            <td>Product Id</td>
+                            <td>Product</td>
+                            <td>Unit Price</td>
+                            <td>Quanitiy</td>
+                            <td>Price</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in order.onlineorderitems_set.all %}
+                        <tr>
+                            <td>{{forloop.counter}}</td>
+                            <td>{{item.product.id}}</td>
+                            <td>{{item.product_name}}</td>
+                            <td>{{item.uprice}}</td>
+                            <td>{{item.quanitiy}}</td>
+                            <td>{{item.totalprice}}</td>
+                            
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th colspan="6">
+                            {% if order.is_shipped == 0 %}
+                            <a class="btn btn-success btn-sm float-right shipped" data-href="{% url 'staff:online.order.shipped' order.id %}">Shipped</a>
+                            {% else %}
+                            <button class="btn btn-warning btn-sm float-right" disabled>shipped</button>
+                            {% endif %}
+                        </th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+    $('table').DataTable()
+    $('a.shipped').on('click',function(event){
+       
+        url = $(this).attr('data-href')
+        $.get(url)
+        .done(function(){
+            $.alert({
+                
+                content: 'Status Updated',
+            });
+            $('a.shipped').replaceWith(`<button class="btn btn-warning btn-sm float-right" disabled>shipped</button>`)
+        })
+    })
+</script>
+{% endblock %}

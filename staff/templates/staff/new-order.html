@@ -1,0 +1,137 @@
+{% extends 'staff/components/base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block head %}
+  <!-- Select2 -->
+  <link rel="stylesheet" href="{% static 'administration/plugins/select2/css/select2.min.css'%}">
+  <link rel="stylesheet" href="{% static 'administration/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css'%}">
+
+{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <form class="card card-outline card-info" method="POST">
+                {% csrf_token %}
+                <div class="card-header">
+                  <h3 class="card-title">Order Details</h3>
+                  <div class="card-tools">
+                    <!-- Buttons, labels, and many other things can be placed here! -->
+                    <!-- Here is a label for example -->
+                    
+                  </div>
+                  <!-- /.card-tools -->
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+                  <div class="container">
+                    <div class="row">
+                      <div class="col-6">
+                        {% csrf_token %}
+                        <label for=".select2" class="control-form">Product Search</label>
+                        <select class="form-control select2">
+                          <option>SELECT</option>
+                          {% for product in products %}
+                            <option value="{{product.id}}">{{product}} (SKU:{{product.sku}})</option>
+                          {% endfor %}
+                        </select>
+                      </div>
+                      <div class="col-6">
+                        <label for="mobilenumber" class="control-form">Customer Mobile Number</label>
+                        <input type="text" name="mobilenumber" id="mobilenumer" class="form-control">
+                      </div>
+                  </div>
+                
+
+                  
+                 </div>
+                 <div class="row">
+                   <div class="col-md-12 mt-3">
+                     <table class="table table-striped ">
+                      <thead>
+                        <tr>
+                          <th>Sl.No</th>
+                          <th>Item Code</th>
+                          <th>Item</th>
+                          <th>Unit Price</th>
+                          <th>Count</th>
+                          <th>Total Price</th>
+                         <th>Stock & Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody id="order-product-items">
+                        
+                      </tbody>
+                      <tfooter>
+                        <tr class="bg-gradient-info">
+                          <th class="text-danger" colspan="6">Grand Total (Rupee)</th>
+                          <th class="order_total_price" colspan="2">0.0</th>
+                         
+                        </tr>
+                      </tfooter>
+                     </table>
+                     <input type="hidden" name="count" value="0" id="item-count">
+                   </div>
+                 </div>
+                </div>
+                <!-- /.card-body -->
+                <div class="card-footer">
+                  <button type="button"  class="btn btn-sm btn-success float-right upload">Update</button>
+                </div>
+                <!-- /.card-footer -->
+            </form>
+              <!-- /.card -->
+        </div>
+    </div>
+{% endblock %}
+{% block scripts %}
+<script src="{% static 'administration/dist/js/main.js'%}"></script>
+<script src="{% static 'administration/plugins/select2/js/select2.full.min.js'%}"></script>
+<script src="{% static 'js/shopping_cart.js'%}"></script>
+<script>
+$('.select2').on('change',function(){
+    let id = $(this).val()
+    if(id=='SELECT') return 0;
+    $.post("{% url 'staff:ajax.product.details' %}",{'id':id},function(product){
+     order.addproduct(product.id,product.name,product.price,product.stock)
+     
+    })
+  })
+  $('.upload').on('click',function(e){
+    const regex = new RegExp('[789][0-9]{9}'); 
+    if(regex.test($('#mobilenumer').val()))
+    {
+      if(! order.isEmpty())
+      {
+        customer_order = order.ordertoJson()
+
+console.log(customer_order)
+$.ajax({
+  url: `{% url 'staff:order.place' %}`,
+  type: "POST",
+  data: JSON.stringify(customer_order),
+  contentType: "application/json"
+  
+}).done(function(data){
+  
+ 
+  var myWindow=window.open('','','width=600,height=1000');
+  myWindow.document.write(data);
+  myWindow.document.close();
+  myWindow.focus();
+  myWindow.print();
+  myWindow.close();
+  location.href="{% url 'staff:order.new' %}";
+}) 
+      } else {
+        alert("Shopping cart is empty");
+      }
+    } else {
+        alert("Mobile number is missing");
+    }
+   
+
+})
+
+
+</script>
+{% endblock %}

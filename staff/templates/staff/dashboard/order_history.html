@@ -1,0 +1,52 @@
+{% extends 'staff/components/base.html' %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title"> Orders</h3>
+        <div class="card-tools">
+           
+            <button type="button" class="btn btn-tool" data-card-widget="maximize"><i class="fas fa-expand"></i></button>
+        </div>
+    </div>
+    <div class="card-body">
+        <table class="table table-hover table-striped">
+            <thead>
+                <tr>
+                    <th>Sl.No</th>
+                    <th>Date</th>
+                    <th>Order Id</th>
+                    <th>Customer Mobile Number</th>
+                    <th>No.of Items</th>
+                    <th>Total Price (In Rupees)</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr>
+                    <td>{{forloop.counter}}</td>
+                    <td>{{order.order_date}}</td>
+                    <td>{{order.id}}</td>
+                    <td>{{order.customer_mobile}}</td>
+                    <td>{{order.orderitems_set.count}}</td>
+                    <td>{{order.order_total_price}} Rupees</td>
+                    <td>
+                        <a class="btn btn-default btn-sm" target="_blank" href="{% url 'staff:order.receipt' order.id %}"><i class="fas fa-file-invoice-dollar"></i></a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="card-footer">
+        <a href="{% url 'staff:dashboard' %}" class="btn btn-default btn-sm"><i class="fas fa-arrow-circle-left"></i> Back</a>
+    </div>
+</div>
+
+{% endblock %}
+{% block scripts %}
+<script>
+    $('table').DataTable()
+</script>
+{% endblock %}
